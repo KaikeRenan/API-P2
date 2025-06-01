@@ -1,0 +1,69 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Services\ReviewService;
+use App\Http\Requests\StoreReviewRequest;
+use App\Http\Requests\UpdateReviewRequest;
+use App\Http\Resources\ReviewResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+class ReviewController extends Controller
+{
+    private ReviewService $reviewService;
+
+    public function __construct(ReviewService $reviewService)
+    {
+        $this->reviewService = $reviewService;
+    }
+
+    public function get()
+    {
+        $reviews = $this->reviewService->get();
+        return ReviewResource::collection($reviews);
+    }
+
+    public function details($id)
+    {
+        try {
+            $review = $this->reviewService->details($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'review não encontrado'], 404);
+        }
+        return new ReviewResource($review);
+    }
+
+    public function store(StoreReviewRequest $request)
+    {
+        $data = $request->validated();
+        $review = $this->reviewService->store($data);
+        return new ReviewResource($review);
+    }
+
+    public function update(int $id, UpdateReviewRequest $request)
+    {
+        $data = $request->validated();
+        try {
+            $review = $this->reviewService->update($id, $data);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'review não encontrado'], 404);
+        }
+        return new ReviewResource($review);
+    }
+
+    public function delete(int $id)
+    {
+        try {
+            $this->reviewService->delete($id);
+            return response()->json(['mensagem' => 'Review deletado com sucesso']);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'review não encontrado'], 404);
+        }
+    }
+
+    public function reviewsDoUsuario(int $id)
+    {
+        return response()->json($this->reviewService->reviewsDoUsuario($id));
+    }
+}
