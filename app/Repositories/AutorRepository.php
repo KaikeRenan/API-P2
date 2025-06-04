@@ -33,7 +33,7 @@ class AutorRepository
     public function livrosDoAutor($id)
     {
         $autor = Autor::with('livros')->findOrFail($id);
-        return $autor->livros;
+        return $autor;
     }
 
     public function autoresComLivros()

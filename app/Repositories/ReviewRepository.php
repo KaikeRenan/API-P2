@@ -30,8 +30,4 @@ class ReviewRepository
         return $review;
     }
 
-    public function doUsuario($usuarioId)
-    {
-        return Review::where('usuario_id', $usuarioId)->get();
-    }
 }

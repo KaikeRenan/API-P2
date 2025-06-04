@@ -29,7 +29,7 @@ class ReviewController extends Controller
         try {
             $review = $this->reviewService->details($id);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'review não encontrado'], 404);
+            return response()->json(['error' => 'Review não encontrado'], 404);
         }
         return new ReviewResource($review);
     }
@@ -47,7 +47,7 @@ class ReviewController extends Controller
         try {
             $review = $this->reviewService->update($id, $data);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'review não encontrado'], 404);
+            return response()->json(['error' => 'Review não encontrado'], 404);
         }
         return new ReviewResource($review);
     }
@@ -55,15 +55,10 @@ class ReviewController extends Controller
     public function delete(int $id)
     {
         try {
-            $this->reviewService->delete($id);
-            return response()->json(['mensagem' => 'Review deletado com sucesso']);
+            $review = $this->reviewService->delete($id);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'review não encontrado'], 404);
+            return response()->json(['error' => 'Review não encontrado'], 404);
         }
-    }
-
-    public function reviewsDoUsuario(int $id)
-    {
-        return response()->json($this->reviewService->reviewsDoUsuario($id));
+        return new ReviewResource($review);
     }
 }

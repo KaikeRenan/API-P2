@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Livro;
+use App\Models\Review;
 
 class LivroRepository
 {
@@ -32,11 +33,11 @@ class LivroRepository
 
     public function reviewsDoLivro($id)
     {
-        return Livro::with('reviews')->findOrFail($id)->reviews;
+        return Review::with(['usuarios'])->where('livro_id', $id)->get();
     }
 
     public function livrosComTudo()
     {
-        return Livro::with(['autors', 'generos', 'reviews'])->get();
+        return Livro::with(['autors', 'generos', 'reviews.usuarios'])->get();
     }
 }

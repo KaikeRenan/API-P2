@@ -1,17 +1,20 @@
 <?php
 
+
 namespace App\Http\Controllers;
+
 
 use Illuminate\Http\Request;
 use App\Services\UsuarioService;
 use App\Http\Requests\StoreUsuarioRequest;
 use App\Http\Requests\UpdateUsuarioRequest;
 use App\Http\Resources\UsuarioResource;
+use App\Http\Resources\ReviewResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UsuarioController extends Controller
 {
-    private UsuarioService $usuarioService; 
+    private UsuarioService $usuarioService;
 
 
     public function __construct(UsuarioService $usuarioService) {
@@ -29,7 +32,7 @@ class UsuarioController extends Controller
         try {
             $usuario = $this->usuarioService->details($id);
         }catch(ModelNotFoundException $e){
-            return response()->json(['error'=>'usuario não encontrado'],404);
+            return response()->json(['error'=>'Usuario não encontrado'],404);
         }
         return new UsuarioResource($usuario);
     }
@@ -48,7 +51,7 @@ class UsuarioController extends Controller
         try {
             $usuario = $this->usuarioService->update($id, $data);
         } catch(ModelNotFoundException $e) {
-            return response()->json(['error'=>'usuario não encontrado'],404);
+            return response()->json(['error'=>'Usuario não encontrado'],404);
         }
         return new UsuarioResource($usuario);
     }
@@ -58,17 +61,14 @@ class UsuarioController extends Controller
         try {
             $usuario = $this->usuarioService->delete($id);
         } catch(ModelNotFoundException $e) {
-            return response()->json(['error'=>'usuario não encontrado'],404);
+            return response()->json(['error'=>'Usuario não encontrado'],404);
         }
         return new UsuarioResource($usuario);
     }
 
     public function reviewsDoUsuario(int $id)
     {
-        return response()->json($this->usuarioService->reviewsDoUsuario($id));
+        $reviews = $this->usuarioService->reviewsDoUsuario($id);
+        return ReviewResource::collection($reviews);
     }
-
-    // $reviews = $this->usuarioService->reviewsDoUsuario($id); 
-    // return UsuarioResource::collection($reviews);
-
 }

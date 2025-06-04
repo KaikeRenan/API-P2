@@ -7,6 +7,7 @@ use App\Services\GeneroService;
 use App\Http\Requests\StoreGeneroRequest;
 use App\Http\Requests\UpdateGeneroRequest;
 use App\Http\Resources\GeneroResource;
+use App\Http\Resources\LivroResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class GeneroController extends Controller
@@ -29,7 +30,7 @@ class GeneroController extends Controller
         try {
             $genero = $this->generoService->details($id);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'gênero não encontrado'], 404);
+            return response()->json(['error' => 'Gênero não encontrado'], 404);
         }
         return new GeneroResource($genero);
     }
@@ -47,7 +48,7 @@ class GeneroController extends Controller
         try {
             $genero = $this->generoService->update($id, $data);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'gênero não encontrado'], 404);
+            return response()->json(['error' => 'Gênero não encontrado'], 404);
         }
         return new GeneroResource($genero);
     }
@@ -57,18 +58,20 @@ class GeneroController extends Controller
         try {
             $genero = $this->generoService->delete($id);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'gênero não encontrado'], 404);
+            return response()->json(['error' => 'Gênero não encontrado'], 404);
         }
         return new GeneroResource($genero);
     }
 
     public function listarLivros($id)
     {
-        return response()->json($this->generoService->livrosDoGenero($id));
+        $livros = $this->generoService->livrosDoGenero($id);
+        return LivroResource::collection($livros);
     }
 
     public function generosComLivros()
     {
-        return response()->json($this->generoService->generosComSeusLivros());
+        $generos = $this->generoService->generosComSeusLivros();
+        return GeneroResource::collection($generos);
     }
 }

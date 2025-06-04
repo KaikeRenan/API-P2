@@ -34,9 +34,4 @@ class ReviewService
         return $this->reviewRepository->delete($id);
     }
 
-    public function reviewsDoUsuario($usuarioId)
-    {
-        return $this->reviewRepository->doUsuario($usuarioId);
-    }
-
 }

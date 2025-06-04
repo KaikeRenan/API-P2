@@ -32,6 +32,7 @@ class UsuarioRepository
 
     public function reviewsDoUsuario($usuarioId)
     {
-        return Usuario::with('reviews')->findOrFail($usuarioId)->reviews;
+        $reviews = Usuario::with('reviews')->findOrFail($usuarioId)->reviews;
+        return $reviews;
     }
 }

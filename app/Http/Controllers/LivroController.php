@@ -7,6 +7,7 @@ use App\Services\LivroService;
 use App\Http\Requests\StoreLivroRequest;
 use App\Http\Requests\UpdateLivroRequest;
 use App\Http\Resources\LivroResource;
+use App\Http\Resources\ReviewResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LivroController extends Controller
@@ -29,7 +30,7 @@ class LivroController extends Controller
         try {
             $livro = $this->livroService->details($id);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'livro não encontrado'], 404);
+            return response()->json(['error' => 'Livro não encontrado'], 404);
         }
         return new LivroResource($livro);
     }
@@ -47,7 +48,7 @@ class LivroController extends Controller
         try {
             $livro = $this->livroService->update($id, $data);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'livro não encontrado'], 404);
+            return response()->json(['error' => 'Livro não encontrado'], 404);
         }
         return new LivroResource($livro);
     }
@@ -57,18 +58,20 @@ class LivroController extends Controller
         try {
             $livro = $this->livroService->delete($id);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'livro não encontrado'], 404);
+            return response()->json(['error' => 'Livro não encontrado'], 404);
         }
         return new LivroResource($livro);
     }
 
     public function listarReviews($id)
     {
-        return response()->json($this->livroService->reviewsDoLivro($id));
+        $reviews = $this->livroService->reviewsDoLivro($id);
+        return ReviewResource::collection($reviews);
     }
 
     public function livrosCompletos()
     {
-        return response()->json($this->livroService->livrosComAutorGeneroReviews());
+        $livros = $this->livroService->livrosComAutorGeneroReviews();
+        return LivroResource::collection($livros);
     }
 }
